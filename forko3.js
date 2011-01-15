@@ -20,6 +20,11 @@ http.ServerResponse.prototype.haml = function(view, locals) {
   this.end(Haml.render(template, {locals: {body: body}})); 
 }
 
+http.ServerResponse.prototype.redirect_to = function(path) {
+  this.writeHead(302, {Location: path});
+  this.end(); 
+}
+
 fs.fileExists = function(file, callbacks) {
   if (callbacks == null) { callbacks = {} }
   fs.stat(file, function(error, stats) {
@@ -44,6 +49,10 @@ var App = function (params) {
   
   this.path = function() {
     return path.join(this.root(), "index.html"); 
+  }
+  
+  this.url = function() {
+    return "/" + this.slug; 
   }
   
   this.validate = function(callback) {
@@ -85,11 +94,7 @@ var App = function (params) {
 var server = Router.getServer();
 
 server.get("/", function (request, response) {
-  app = new App({slug: 'start'})
-  fs.readFile(app.path(), function (err, data) {
-    response.writeHead(200, {'Content-Type': 'text/html'});
-    response.end(data);
-  });
+  response.redirect_to("/start");
 })
 
 server.get(new RegExp("^/fork/([a-z]*)$"), function (request, response, match) {
@@ -108,13 +113,20 @@ server.post('/apps', function(request, response) {
     app.validate(function(valid) {
       if (valid) {
         app.create(function() {
-          response.writeHead(200, {'Content-Type': 'text/html'});
-          response.end( app.root() );
+          response.redirect_to(app.url());
         });
       } else {
         response.haml('fork', {host: hostname, app: app});
       }
     });
+  });
+});
+
+server.get(new RegExp("^/([a-z]*)$"), function (request, response, match) {
+  app = new App({slug: match});
+  fs.readFile(app.path(), function (err, data) {
+    response.writeHead(200, {'Content-Type': 'text/html'});
+    response.end(data);
   });
 });
 
