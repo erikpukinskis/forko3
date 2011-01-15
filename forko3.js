@@ -25,6 +25,13 @@ http.ServerResponse.prototype.redirect_to = function(path) {
   this.end(); 
 }
 
+http.IncomingMessage.prototype.getParams = function(callback) {
+  this.addListener("data", function(data) {
+    params = querystring.parse(data);
+    callback.call(this, params);
+  });
+}
+
 fs.fileExists = function(file, callbacks) {
   if (callbacks == null) { callbacks = {} }
   fs.stat(file, function(error, stats) {
@@ -122,8 +129,7 @@ server.get(new RegExp("^/edit/([a-z]*)$"), function (request, response, match) {
 });
 
 server.post('/apps', function(request, response) {
-  request.addListener("data", function(data) {
-    params = querystring.parse(data);
+  request.getParams(function(params) {
     app = new App(params)
     app.validate(function(valid) {
       if (valid) {
