@@ -5,11 +5,13 @@
     %br/
     = host
     /
-    %input{name: 'slug', value: app.slug}
-    :if app.errors['slug']
-      %span.error
-        = app.errors['slug']
-    
+    :if (action == 'fork')
+      %input{name: 'slug', value: app.slug}
+      :if app.errors['slug']
+        %span.error
+          = app.errors['slug']
+    :if (action == 'edit')
+      = app.slug    
   %p
     %strong Code
     %br/

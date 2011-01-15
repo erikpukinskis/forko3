@@ -90,10 +90,16 @@ var App = function (params) {
   this.create = function(callback) {
     app = this;
     this.make_dir(function() {
-      fs.writeFile(app.path(), app.code, function(error) {
+      app.save(function() {
         callback.call();
       });
     }); 
+  }
+  
+  this.save = function(callback) {
+    fs.writeFile(this.path(), this.code, function(error) {
+      callback.call();
+    });    
   }
   
   this.load = function(callback) {
@@ -139,6 +145,16 @@ server.post('/apps', function(request, response) {
       } else {
         response.haml('fork', {host: hostname, app: app});
       }
+    });
+  });
+});
+
+server.post(new RegExp("^/([a-z]*)$"), function(request, response, match) {
+  request.getParams(function(params) {
+    app = new App({slug: match})
+    app.code = params['code']
+    app.save(function() {
+      response.redirect_to(app.url());
     });
   });
 });
