@@ -1,4 +1,4 @@
-%form{method: 'post', action: '/apps'}
+%form{method: 'post', action: ((action == 'fork') ? '/apps' : app.url())}
   %input{type: 'hidden', name: 'parent', value: app.parent}
   %p
     %strong Address
@@ -17,4 +17,4 @@
       = app.code
     
   %p
-    %input{type: 'submit', value: 'Create'}
+    %input{type: 'submit', value: ((action == 'fork') ? 'Create' : 'Save')}

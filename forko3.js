@@ -89,6 +89,13 @@ var App = function (params) {
     }); 
   }
   
+  this.load = function(callback) {
+    app = this
+    fs.readFile(this.path(), function (err, data) {
+      app.code = data
+      callback.call();
+    });
+  }  
 }
 
 var server = Router.getServer();
@@ -100,9 +107,17 @@ server.get("/", function (request, response) {
 server.get(new RegExp("^/fork/([a-z]*)$"), function (request, response, match) {
   app = new App({slug: match});
   app.parent = match
+  
   fs.readFile(app.path(), function (err, data) {
     app.code = data
-    response.haml('fork', {host: hostname, app: app});
+    response.haml('fork', {host: hostname, app: app, action: 'fork'});
+  });
+});
+
+server.get(new RegExp("^/edit/([a-z]*)$"), function (request, response, match) {
+  app = new App({slug: match});
+  app.load(function() {
+    response.haml('fork', {host: hostname, app: app, action: 'edit'});
   });
 });
 
