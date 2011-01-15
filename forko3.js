@@ -5,21 +5,45 @@ var http = require('http'),
   url = require('url'),
   sys = require('sys'),
   querystring = require('querystring'),
+  exec = require('child_process').exec;
   Router = require('node-router'),
   Haml = require('haml');
 
 var hostname = 'http://localhost:8124'
+
+http.ServerResponse.prototype.haml = function(view, locals) {
+  haml = fs.readFileSync('views/' + view + '.haml', 'utf8');
+  this.writeHead(200, {'Content-Type': 'text/html'});
+  body = Haml.render(haml, {locals: locals})
+  
+  template = fs.readFileSync('views/template.haml', 'utf8');
+  this.end(Haml.render(template, {locals: {body: body}})); 
+}
+
+fs.fileExists = function(file, callbacks) {
+  if (callbacks == null) { callbacks = {} }
+  fs.stat(file, function(error, stats) {
+    if (callbacks[!!stats]) {
+      callbacks[!!stats].call();
+    }
+  });
+ 
+}
 
 var App = function (params) {
   this.params = params
   this.slug = params.slug;
   this.code = params.code;
   this.parent = params.parent;
-  this.root = '/Users/erik/projects/forko3/apps';
+  this.base_path = '/Users/erik/projects/forko3/apps';
   this.errors = {}
   
+  this.root = function() {
+    return path.join(this.base_path, this.slug.substr(0,1), this.slug.substr(0,2), this.slug);
+  }
+  
   this.path = function() {
-    return path.join(this.root, this.slug.substr(0,1), this.slug.substr(0,2), this.slug, "index.html"); 
+    return path.join(this.root(), "index.html"); 
   }
   
   this.validate = function(callback) {
@@ -37,15 +61,25 @@ var App = function (params) {
       callback.call(app, valid_slug && !exists);
     });
   }
-}
-
-http.ServerResponse.prototype.haml = function(view, locals) {
-  haml = fs.readFileSync('views/' + view + '.haml', 'utf8');
-  this.writeHead(200, {'Content-Type': 'text/html'});
-  body = Haml.render(haml, {locals: locals})
   
-  template = fs.readFileSync('views/template.haml', 'utf8');
-  this.end(Haml.render(template, {locals: {body: body}})); 
+  this.make_dir = function(callback) {
+    app = this
+    fs.fileExists(app.root(), {false: function() {
+      exec("mkdir -p " + app.root(), function (error, stdout, stderr) {
+        callback.call(); 
+      });  
+    }});
+  }
+  
+  this.create = function(callback) {
+    app = this;
+    this.make_dir(function() {
+      fs.writeFile(app.path(), app.code, function(error) {
+        callback.call();
+      });
+    }); 
+  }
+  
 }
 
 var server = Router.getServer();
@@ -73,8 +107,10 @@ server.post('/apps', function(request, response) {
     app = new App(params)
     app.validate(function(valid) {
       if (valid) {
-        response.writeHead(200, {'Content-Type': 'text/html'});
-        response.end( "ok" );
+        app.create(function() {
+          response.writeHead(200, {'Content-Type': 'text/html'});
+          response.end( app.root() );
+        });
       } else {
         response.haml('fork', {host: hostname, app: app});
       }
