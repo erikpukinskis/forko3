@@ -1,10 +1,9 @@
 require.paths.unshift('../vendor/node-router/lib', '../vendor/haml-js/lib');
-var http = require('http'),
+var http = require('./fork-http'),
   fs = require('fs'),
   path = require('path'),
   url = require('url'),
   sys = require('sys'),
-  querystring = require('querystring'),
   exec = require('child_process').exec;
   Router = require('node-router'),
   Haml = require('haml');
@@ -12,26 +11,6 @@ var http = require('http'),
 require('./app');
 var hostname = 'http://localhost:8124'
 
-http.ServerResponse.prototype.haml = function(view, locals) {
-  haml = fs.readFileSync('views/' + view + '.haml', 'utf8');
-  this.writeHead(200, {'Content-Type': 'text/html'});
-  body = Haml.render(haml, {locals: locals})
-  
-  template = fs.readFileSync('views/template.haml', 'utf8');
-  this.end(Haml.render(template, {locals: {body: body}})); 
-}
-
-http.ServerResponse.prototype.redirect_to = function(path) {
-  this.writeHead(302, {Location: path});
-  this.end(); 
-}
-
-http.IncomingMessage.prototype.getParams = function(callback) {
-  this.addListener("data", function(data) {
-    params = querystring.parse(data);
-    callback.call(this, params);
-  });
-}
 
 fs.fileExists = function(file, callbacks) {
   if (callbacks == null) { callbacks = {} }
