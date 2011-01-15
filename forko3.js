@@ -10,12 +10,24 @@ var http = require('http'),
 
 var hostname = 'http://localhost:8124'
 
-var App = function (name) {
-  this.name = name;
+var App = function (params) {
+  this.params = params
+  this.slug = params.slug;
+  this.code = params.code;
+  this.parent = params.parent;
   this.root = '/Users/erik/projects/forko3/apps';
   
   this.path = function() {
-    return path.join(this.root, this.name.substr(0,1), this.name.substr(0,2), this.name + ".html"); 
+    return path.join(this.root, this.slug.substr(0,1), this.slug.substr(0,2), this.slug + ".html"); 
+  }
+  
+  this.validate = function(callback) {
+    valid_slug = !!/^[a-z]+$/.exec(params.slug)
+    app = this;
+    fs.stat(this.path(), function(error, stats) {
+      exists = !!stats
+      callback.call(app, valid_slug && !exists);
+    });
   }
 }
 
@@ -28,7 +40,7 @@ http.ServerResponse.prototype.haml = function(view, locals) {
 var server = Router.getServer();
 
 server.get("/", function (request, response) {
-  app = new App('start')
+  app = new App({slug: 'start'})
   fs.readFile(app.path(), function (err, data) {
     response.writeHead(200, {'Content-Type': 'text/html'});
     response.end(data);
@@ -36,7 +48,7 @@ server.get("/", function (request, response) {
 })
 
 server.get(new RegExp("^/fork/([a-z]*)$"), function (request, response, match) {
-  app = new App(match);
+  app = new App({slug: match});
   app.parent = match
   fs.readFile(app.path(), function (err, data) {
     app.code = data
@@ -47,8 +59,14 @@ server.get(new RegExp("^/fork/([a-z]*)$"), function (request, response, match) {
 server.post('/apps', function(request, response) {
   request.addListener("data", function(data) {
     params = querystring.parse(data);
-    response.writeHead(200, {'Content-Type': 'text/html'});
-    response.end(.parent);
+    app = new App(params)
+    /*if app.isValid() {
+      app.create();
+    }*/
+    app.validate(function(valid) {
+      response.writeHead(200, {'Content-Type': 'text/html'});
+      response.end( sys.inspect( valid ));
+    });
   });
 });
 
