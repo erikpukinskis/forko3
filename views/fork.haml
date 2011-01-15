@@ -1,1 +1,15 @@
-%h1 Fork
+%p
+  %strong Address
+  %br/
+  = host
+  /
+  %input
+  
+%p
+  %strong Code
+  %br/
+  %textarea{rows: 20, cols: 70}
+    = code
+  
+%p
+  %input{type: 'submit', value: 'Create'}
