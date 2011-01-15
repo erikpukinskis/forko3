@@ -1,15 +1,17 @@
-%p
-  %strong Address
-  %br/
-  = host
-  /
-  %input
-  
-%p
-  %strong Code
-  %br/
-  %textarea{rows: 20, cols: 70}
-    = code
-  
-%p
-  %input{type: 'submit', value: 'Create'}
+%form{method: 'post', action: '/apps'}
+  %input{type: 'hidden', name: 'parent', value: app.parent}
+  %p
+    %strong Address
+    %br/
+    = host
+    /
+    %input{name: 'slug'}
+    
+  %p
+    %strong Code
+    %br/
+    %textarea{name: 'code', rows: 20, cols: 70}
+      = app.code
+    
+  %p
+    %input{type: 'submit', value: 'Create'}
