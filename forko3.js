@@ -16,16 +16,24 @@ var App = function (params) {
   this.code = params.code;
   this.parent = params.parent;
   this.root = '/Users/erik/projects/forko3/apps';
+  this.errors = {}
   
   this.path = function() {
     return path.join(this.root, this.slug.substr(0,1), this.slug.substr(0,2), this.slug + ".html"); 
   }
   
   this.validate = function(callback) {
+
     valid_slug = !!/^[a-z]+$/.exec(params.slug)
+    if (!valid_slug) {
+      this.errors["slug"] = "Address can only be lowercase letters" 
+    }
     app = this;
     fs.stat(this.path(), function(error, stats) {
       exists = !!stats
+      if (exists) {
+        app.errors["slug"] = "Address is already taken" 
+      }
       callback.call(app, valid_slug && !exists);
     });
   }
@@ -34,7 +42,10 @@ var App = function (params) {
 http.ServerResponse.prototype.haml = function(view, locals) {
   haml = fs.readFileSync('views/' + view + '.haml', 'utf8');
   this.writeHead(200, {'Content-Type': 'text/html'});
-  this.end(Haml.render(haml, {locals: locals})); 
+  body = Haml.render(haml, {locals: locals})
+  
+  template = fs.readFileSync('views/template.haml', 'utf8');
+  this.end(Haml.render(template, {locals: {body: body}})); 
 }
 
 var server = Router.getServer();
@@ -60,12 +71,13 @@ server.post('/apps', function(request, response) {
   request.addListener("data", function(data) {
     params = querystring.parse(data);
     app = new App(params)
-    /*if app.isValid() {
-      app.create();
-    }*/
     app.validate(function(valid) {
-      response.writeHead(200, {'Content-Type': 'text/html'});
-      response.end( sys.inspect( valid ));
+      if (valid) {
+        response.writeHead(200, {'Content-Type': 'text/html'});
+        response.end( "ok" );
+      } else {
+        response.haml('fork', {host: hostname, app: app});
+      }
     });
   });
 });

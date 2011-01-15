@@ -5,7 +5,10 @@
     %br/
     = host
     /
-    %input{name: 'slug'}
+    %input{name: 'slug', value: app.slug}
+    :if app.errors['slug']
+      .error
+        = app.errors['slug']
     
   %p
     %strong Code
