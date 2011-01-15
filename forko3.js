@@ -19,7 +19,7 @@ var App = function (params) {
   this.errors = {}
   
   this.path = function() {
-    return path.join(this.root, this.slug.substr(0,1), this.slug.substr(0,2), this.slug + ".html"); 
+    return path.join(this.root, this.slug.substr(0,1), this.slug.substr(0,2), this.slug, "index.html"); 
   }
   
   this.validate = function(callback) {
