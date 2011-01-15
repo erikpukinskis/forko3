@@ -1,10 +1,8 @@
 require.paths.unshift('../vendor/node-router/lib', '../vendor/haml-js/lib');
-var http = require('./fork-http'),
-  fs = require('fs'),
+var http = require('./fork-http').http,
+  fs = require('./fork-fs').fs,
   path = require('path'),
   url = require('url'),
-  sys = require('sys'),
-  exec = require('child_process').exec;
   Router = require('node-router'),
   Haml = require('haml');
 
@@ -12,22 +10,10 @@ require('./app');
 var hostname = 'http://localhost:8124'
 
 
-fs.fileExists = function(file, callbacks) {
-  if (callbacks == null) { callbacks = {} }
-  fs.stat(file, function(error, stats) {
-    if (callbacks[!!stats]) {
-      callbacks[!!stats].call();
-    }
-  });
- 
-}
-
-
-
 var server = Router.getServer();
 
 server.get("/", function (request, response) {
-  response.redirect_to("/start");
+  response.haml('home');
 })
 
 server.get(new RegExp("^/fork/([a-z]*)$"), function (request, response, match) {

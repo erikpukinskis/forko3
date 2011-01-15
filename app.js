@@ -1,5 +1,7 @@
 var path = require('path'),
-fs = require('fs')
+  sys = require('sys'),
+  exec = require('child_process').exec;
+  fs = require('./fork-fs').fs
 
 App = function (params) {
   this.params = params
