@@ -1,4 +1,9 @@
-require.paths.unshift('../vendor/node-router/lib', '../vendor/haml-js/lib');
+var HAML_PATH = '../vendor/node-router/lib', 
+    ROUTER_PATH = '../vendor/haml-js/lib',
+    DEFAULT_PORT = 8124;
+    
+require.paths.unshift(HAML_PATH, ROUTER_PATH);
+
 var http = require('./fork-http').http,
   fs = require('./fork-fs').fs,
   path = require('path'),
@@ -7,7 +12,7 @@ var http = require('./fork-http').http,
   Haml = require('haml');
 
 require('./app');
-var port = process.argv[2] == "-p" ? process.argv[3] : 8124;
+var port = process.argv[2] == "-p" ? process.argv[3] : DEFAULT_PORT;
 var hostname = 'http://localhost:' + port;
 
 sample = new App({slug: 'start'});

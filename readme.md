@@ -8,5 +8,13 @@ Installation
 
 1. Install node.js (configure, make, make install)
 2. Set this.base_path in app.js to wherever you want apps to be stored (We recommend src/../apps)
+3. Install node-router and haml-js plugins somewhere and make set HAML_PATH and ROUTER_PATH in forko3.js. Default is to just git clone them both into ../vendor
 3. Go into src/ and run "node forko3.js"
 4. Go to http://localhost:8124 to see if it worked
+
+Command line flags
+------------------
+
+Set the port: 
+
+    node forko3.js -p 1234
