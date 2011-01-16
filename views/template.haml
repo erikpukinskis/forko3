@@ -1,8 +1,22 @@
 %html
   %head
     %title Forko3
+    %link{href: 'http://fonts.googleapis.com/css?family=Merriweather', rel: 'stylesheet', type: 'text/css'}
+
     :css
+      body {
+        font-family: 'Merriweather', arial, serif;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+        margin-top: 40px; 
+      }
+      
+      p {
+        line-height: 1.4em; 
+      }
       .error {
         color: red; 
       }
+      
   %body= body
