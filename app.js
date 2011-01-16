@@ -24,18 +24,23 @@ App = function (params) {
   }
   
   this.validate = function(callback) {
-    valid_slug = !!/^[a-z]+$/.exec(params.slug)
+    var valid_slug = !!/^[a-z]+$/.exec(this.slug)
     if (!valid_slug) {
       this.errors["slug"] = "Address can only be lowercase letters" 
     }
     
-    app = this;  
+    var reserved = ['edit', 'fork', 'couchdb'].indexOf(this.slug) != -1
+    if (reserved) {
+      this.errors["slug"] = "Address is reserved" 
+    }
+    
+    var app = this;  
     fs.fileExists(this.root(), {
       true: function() {
         app.errors["slug"] = "Address is already taken" 
       },
       both: function(exists) {
-        callback.call(app, valid_slug && !exists);    
+        callback.call(app, valid_slug && !exists && !reserved);    
       }
     });
   }
