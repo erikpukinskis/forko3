@@ -10,6 +10,15 @@ require('./app');
 var port = process.argv[2] == "-p" ? process.argv[3] : 8124;
 var hostname = 'http://localhost:' + port;
 
+sample = new App({slug: 'start'});
+sample.exists({
+  false: function() {
+    fs.readFile('samples/start/index.html', function (err, data) {
+      sample.code = data
+      sample.create();
+    });
+  }
+});
 
 var server = Router.getServer();
 

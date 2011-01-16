@@ -24,18 +24,34 @@ App = function (params) {
   }
   
   this.validate = function(callback) {
-
     valid_slug = !!/^[a-z]+$/.exec(params.slug)
     if (!valid_slug) {
       this.errors["slug"] = "Address can only be lowercase letters" 
     }
+    
+    app = this;  
+    this.exists({
+      true: function() {
+        app.errors["slug"] = "Address is already taken" 
+      },
+      both: function(exists) {
+        callback.call(app, valid_slug && !exists);    
+      }
+    });
+  }
+  
+  this.exists = function(callbacks) {
     app = this;
     fs.stat(this.path(), function(error, stats) {
       exists = !!stats
-      if (exists) {
-        app.errors["slug"] = "Address is already taken" 
+      if (exists && callbacks[true]) {
+        callbacks[true].call();
+      } else if (!exists && callbacks[false]) {
+        callbacks[false].call(); 
       }
-      callback.call(app, valid_slug && !exists);
+      if (callbacks['both']) {
+        callbacks['both'].call(app, exists); 
+      }
     });
   }
   
@@ -52,14 +68,14 @@ App = function (params) {
     app = this;
     this.make_dir(function() {
       app.save(function() {
-        callback.call();
+        if (callback) { callback.call(); }
       });
     }); 
   }
   
   this.save = function(callback) {
     fs.writeFile(this.path(), this.code, function(error) {
-      callback.call();
+      if (callback) { callback.call(); }
     });    
   }
   
