@@ -7,7 +7,8 @@ var http = require('./fork-http').http,
   Haml = require('haml');
 
 require('./app');
-var hostname = 'http://localhost'
+var port = process.argv[2] == "-p" ? process.argv[3] : 8124;
+var hostname = 'http://localhost:' + port;
 
 
 var server = Router.getServer();
@@ -66,7 +67,7 @@ server.get(new RegExp("^/([a-z]*)$"), function (request, response, match) {
   });
 });
 
-server.listen(80);
+server.listen(port);
 
-console.log('Server running at http://127.0.0.1:80/');
+console.log('Server running at http://127.0.0.1:' + port + '/');
 
