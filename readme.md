@@ -11,7 +11,7 @@ Installation
 3. Install [nginx](http://wiki.nginx.org/Main)
 4. Install [CouchDB](http://couchdb.apache.org/)
 5. git clone git://github.com/erikpukinskis/forko3.git
-6. Add "include /path/to/forko3/source/nginx.conf;" to your nginx.conf file, inside the http {} block
+6. Add "include /path/to/forko3/nginx.conf;" to your nginx.conf file, inside the http {} block
 7. Make sure the port in the nginx.conf corresponds to your running nginx server
 8. Reload your nginx conf (sudo kill -HUP `cat /opt/local/var/run/nginx/nginx.pid`)
 9. cd forko3
