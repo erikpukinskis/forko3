@@ -1,7 +1,7 @@
 Forko3
 ======
 
-A simple HTML hosting and editing server build in Node.js. Part of the Forkolator project (http://forkolator.org).
+A simple HTML hosting and editing server build in Node.js. Part of the [Forkolator](http://forkolator.org) project.
 
 Installation
 ------------
