@@ -8,20 +8,22 @@ Installation
 
 1. Install [Git](http://git-scm.com/)
 2. Install [Node.js](http://nodejs.org/)
-3. git clone git://github.com/erikpukinskis/forko3.git
-4. cd forko3
-5. Set this.base_path in app.js to wherever you want apps to be stored (We recommend ../apps)
-6. Install [node-router](https://github.com/creationix/node-router) and [haml-js](https://github.com/creationix/haml-js) somewhere and make set HAML_PATH and ROUTER_PATH in forko3.js. Default is to just git clone them both into ../vendor
-7. Run "node forko3.js"
-8. Go to http://localhost:8124 to see if it worked!
+3. Install [nginx](http://wiki.nginx.org/Main)
+5. git clone git://github.com/erikpukinskis/forko3.git
+4. Add "include /path/to/forko3/source/nginx.conf;" to your nginx.conf file, inside the http {} block
+5. cd forko3
+6. Set this.base_path in app.js to wherever you want apps to be stored (We recommend ../apps)
+7. Install [node-router](https://github.com/creationix/node-router) and [haml-js](https://github.com/creationix/haml-js) somewhere and make set HAML_PATH and ROUTER_PATH in forko3.js. Default is to just git clone them both into ../vendor
+8. Run "node forko3.js"
+9. Go to http://localhost:8124 to see if it worked!
 
-If you tweak your nginx configuration and want to reload it, use (the exact path will vary from platform to platform):
+Things you might want to do:
+----------------------------
+
+If you tweak the nginx.conf and want to reload it, use: (the exact path will vary from platform to platform)
 
     sudo kill -HUP `cat /opt/local/var/run/nginx/nginx.pid`
     
-Command line flags
-------------------
-
-Set the port: 
+Change the port forko3 runs on (remember to update your nginx.conf accordingly):
 
     node forko3.js -p 1234
