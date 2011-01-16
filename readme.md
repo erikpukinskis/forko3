@@ -16,7 +16,7 @@ Installation
 8. Reload your nginx conf (sudo kill -HUP `cat /opt/local/var/run/nginx/nginx.pid`)
 9. cd forko3
 10. Set this.base_path in app.js to wherever you want apps to be stored (We recommend ../apps)
-11. Install [node-router](https://github.com/creationix/node-router) and [haml-js](https://github.com/creationix/haml-js) somewhere and make set HAML_PATH and ROUTER_PATH in forko3.js. Default is to just git clone them both into ../vendor
+11. Install [node-router](https://github.com/creationix/node-router) and [haml-js](https://github.com/creationix/haml-js) somewhere and set HAML_PATH and ROUTER_PATH in forko3.js. Default is to just git clone them both into ../vendor
 12. Run "node forko3.js"
 13. Go to http://localhost:8124 to see if it worked!
 
