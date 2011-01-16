@@ -42,7 +42,7 @@ server.post('/apps', function(request, response) {
           response.redirect_to(app.url());
         });
       } else {
-        response.haml('fork', {host: hostname, app: app});
+        response.haml('fork', {host: hostname, app: app, action: 'fork'});
       }
     });
   });
