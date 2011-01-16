@@ -3,8 +3,12 @@ exports.fs = require('fs');
 exports.fs.fileExists = function(file, callbacks) {
   if (callbacks == null) { callbacks = {} }
   this.stat(file, function(error, stats) {
-    if (callbacks[!!stats]) {
-      callbacks[!!stats].call();
+    exists = !!stats
+    if (callbacks[exists]) {
+      callbacks[exists].call();
+    }
+    if (callbacks['both']) {
+      callbacks['both'].call(exists); 
     }
   });
 }

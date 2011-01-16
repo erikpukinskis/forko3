@@ -8,7 +8,7 @@ App = function (params) {
   this.slug = params.slug;
   this.code = params.code;
   this.parent = params.parent;
-  this.base_path = '/Users/erik/projects/forko3/apps';
+  this.base_path = '../apps';
   this.errors = {}
   
   this.root = function() {
@@ -30,27 +30,12 @@ App = function (params) {
     }
     
     app = this;  
-    this.exists({
+    fs.fileExists(this.root(), {
       true: function() {
         app.errors["slug"] = "Address is already taken" 
       },
       both: function(exists) {
         callback.call(app, valid_slug && !exists);    
-      }
-    });
-  }
-  
-  this.exists = function(callbacks) {
-    app = this;
-    fs.stat(this.path(), function(error, stats) {
-      exists = !!stats
-      if (exists && callbacks[true]) {
-        callbacks[true].call();
-      } else if (!exists && callbacks[false]) {
-        callbacks[false].call(); 
-      }
-      if (callbacks['both']) {
-        callbacks['both'].call(app, exists); 
       }
     });
   }
