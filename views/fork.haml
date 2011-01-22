@@ -18,8 +18,9 @@
   %p
     %strong Code
     %br/
-    %textarea{name: 'code', id: 'code'}
+    %textarea{id: 'code'}
       = app.code
+    %input#hidden_code{type: 'hidden', name: 'code' value: app.code}
     
   %p
     %input{type: 'submit', value: ((action == 'fork') ? 'Create' : 'Save')}

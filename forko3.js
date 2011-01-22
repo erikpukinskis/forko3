@@ -1,5 +1,5 @@
-var HAML_PATH = '../vendor/node-router/lib', 
-    ROUTER_PATH = '../vendor/haml-js/lib',
+var ROUTER_PATH = '../vendor/node-router/lib', 
+    HAML_PATH = '../vendor/haml-js/lib',
     DEFAULT_PORT = 8124;
     
 require.paths.unshift(HAML_PATH, ROUTER_PATH);
