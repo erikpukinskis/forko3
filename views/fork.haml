@@ -1,3 +1,6 @@
+%script{src: '/public/vendor/edit_area/edit_area_loader.js'}
+%script{src: '/public/javascripts/editor.js'}
+
 %form{method: 'post', action: ((action == 'fork') ? '/apps' : app.url())}
   %input{type: 'hidden', name: 'parent', value: app.parent}
   %p
@@ -15,7 +18,7 @@
   %p
     %strong Code
     %br/
-    %textarea{name: 'code', rows: 20, cols: 70}
+    %textarea{name: 'code', id: 'code'}
       = app.code
     
   %p
