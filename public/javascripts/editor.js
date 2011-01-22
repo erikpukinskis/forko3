@@ -10,9 +10,4 @@ $(document).ready(function() {
     ,replace_tab_by_spaces: 2
 	});
 	
-	$("form").submit(function(e) {
-	  var code = editAreaLoader.getValue('code');
-	  $("#hidden_code").val(code);
-	  return true;
-	});
 });
