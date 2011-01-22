@@ -27,6 +27,8 @@ fs.fileExists(sample.root(), {
 
 var server = Router.getServer();
 
+server.get(new RegExp('^/public/.*$'), Router.staticDirHandler('public', '/public'));
+
 server.get("/", function (request, response) {
   response.haml('home');
 })
