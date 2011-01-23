@@ -20,7 +20,7 @@
     }      
 
     function create_home_page(callback) {
-      save("hello, world!", callback);
+      save("This is a sample Forkolator App!\n\nYou can [fork it](/fork/start) and you can [edit it](/edit/start)!", callback);
     }    
     
     function load() {
@@ -41,7 +41,10 @@
     }
     
     function render(body) {
-      return body.replace("\n", "<br>").replace(/\[([^\]]*)\]\(([^\)]*)\)/, "<a href=\"$2\">$1</a>");  
+      return body.
+             replace(/\n/g, "<br>").
+             replace(/\[\[([^\]]*)\]\]/g, "<a href=\"/start/$1\">$1</a>"). 
+             replace(/\[([^\]]*)\]\(([^\)]*)\)/g, "<a href=\"$2\">$1</a>");  
     }
       
     function edit() {
