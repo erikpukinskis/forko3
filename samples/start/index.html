@@ -20,12 +20,7 @@
     }      
 
     function create_home_page(callback) {
-      $.ajax({ 
-        url: db_url + "/start/home", 
-        type: 'put',
-        data: "{\"body\": \"hello jacaksses\"}",
-        success: callback
-      });
+      save("hello, world!", callback);
     }    
     
     function load() {
@@ -35,8 +30,9 @@
         dataType: 'json',
         success: function(data) {
           rev = data['_rev'];
-          $("#body").html(data['body']);
-          $("#code").html(data['body']);
+          decoded = decodeURI(data['body'])
+          $("#body").html(decoded);
+          $("#code").html(decoded);
           $("#title").html("home");
           $("#show").show();
           $("#edit").hide();
@@ -49,12 +45,14 @@
       $("#edit").show();
     }
     
-    function save() {
+    function save(body, callback) {
+      if (!body) { body = $("#code").attr("value") }
+      var encoded = encodeURI(body);
       $.ajax({ 
         url: db_url + "/start/home", 
         type: 'put',
-        data: JSON.stringify({"_rev": rev, "body": $("#code").html()}),
-        success: load
+        data: JSON.stringify({"_rev": rev, "body": encoded}),
+        success: callback
       });  
     }
     
@@ -92,7 +90,7 @@
   
   <div id="edit" style="display: none;">
     <textarea id="code"></textarea>
-    <button onclick="save()">Save</button>
+    <button onclick="save(null, load)">Save</button>
   </div>
 </div>
 </body>
