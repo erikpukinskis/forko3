@@ -31,13 +31,17 @@
         success: function(data) {
           rev = data['_rev'];
           decoded = decodeURI(data['body'])
-          $("#body").html(decoded);
+          $("#body").html(render(decoded));
           $("#code").html(decoded);
           $("#title").html("home");
           $("#show").show();
           $("#edit").hide();
         }
       });
+    }
+    
+    function render(body) {
+      return body.replace("\n", "<br>").replace(/\[([^\]]*)\]\(([^\)]*)\)/, "<a href=\"$2\">$1</a>");  
     }
       
     function edit() {
