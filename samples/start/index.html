@@ -7,7 +7,6 @@
   <script type="text/javascript">
     var db_url = "/couchdb";
     var rev;
-    var page;
     
     function create_db(callback) {
       $.ajax({ 
@@ -21,7 +20,8 @@
     }      
 
     function create_home_page(callback) {
-      save("This is a sample Forkolator App!\n\nYou can [fork it](/fork/start) and you can [edit it](/edit/start)!", callback);
+      page = "home";
+      save("This is a sample Forkolator App. It's a [[Wiki]]!\n\nYou can [fork it](/fork/start) and you can [edit it](/edit/start)!", callback);
     }    
     
     function load() {
@@ -36,14 +36,14 @@
           decoded = decodeURI(data['body'])
           $("#body").html(render(decoded));
           $("#code").html(decoded);
-          $(".title").html(data['_id']);
+          $(".title").html(page);
           $("#show").show();
           $("#edit").hide();
         },
         error: function() {
+          rev = null;
           $(".title").html(page);
           edit();
-          rev = null;
         }
       });
     }
@@ -64,7 +64,7 @@
       if (!body) { body = $("#code").attr("value") }
       var encoded = encodeURI(body);
       var data = {"body": encoded}
-      if(rev) { data['_rev'] = rev }
+      if (rev) { data['_rev'] = rev }
       $.ajax({ 
         url: db_url + "/start/" + page, 
         type: 'put',
