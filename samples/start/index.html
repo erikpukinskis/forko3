@@ -7,6 +7,7 @@
   <script type="text/javascript">
     var db_url = "/couchdb";
     var rev;
+    var page;
     
     function create_db(callback) {
       $.ajax({ 
@@ -24,8 +25,10 @@
     }    
     
     function load() {
+      match = location.pathname.match(/^\/start\/(.*)$/)
+      page = match ? match[1] : "home"
       $.ajax({ 
-        url: db_url + "/start/home", 
+        url: db_url + "/start/" + page, 
         type: 'get',
         dataType: 'json',
         success: function(data) {
@@ -33,9 +36,14 @@
           decoded = decodeURI(data['body'])
           $("#body").html(render(decoded));
           $("#code").html(decoded);
-          $("#title").html("home");
+          $(".title").html(data['_id']);
           $("#show").show();
           $("#edit").hide();
+        },
+        error: function() {
+          $(".title").html(page);
+          edit();
+          rev = null;
         }
       });
     }
@@ -55,10 +63,12 @@
     function save(body, callback) {
       if (!body) { body = $("#code").attr("value") }
       var encoded = encodeURI(body);
+      var data = {"body": encoded}
+      if(rev) { data['_rev'] = rev }
       $.ajax({ 
-        url: db_url + "/start/home", 
+        url: db_url + "/start/" + page, 
         type: 'put',
-        data: JSON.stringify({"_rev": rev, "body": encoded}),
+        data: JSON.stringify(data),
         success: callback
       });  
     }
@@ -88,16 +98,15 @@
 <h2>ForkWiki</h2>
 <div id="page">
   <div id="show">
-    <h1 id="title"></h1>
-    <ul id="page_links">
-    <li><a href="javascript:edit();">Edit this page</a></li>
-    </ul>
+    <h1 class="title"></h1>
+    <button onclick="edit()">Edit this page</button>
     <div id="body"></div>
   </div>
   
   <div id="edit" style="display: none;">
-    <textarea id="code"></textarea>
+    <h1 class="title"></h1>
     <button onclick="save(null, load)">Save</button>
+    <textarea id="code"></textarea>
   </div>
 </div>
 </body>

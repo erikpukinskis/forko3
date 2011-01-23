@@ -75,7 +75,7 @@ server.post(new RegExp("^/([a-z]*)$"), function(request, response, match) {
   });
 });
 
-server.get(new RegExp("^/([a-z]*)$"), function (request, response, match) {
+server.get(new RegExp("^/([a-z]*)/?.*$"), function (request, response, match) {
   app = new App({slug: match});
   fs.readFile(app.path(), function (err, data) {
     response.writeHead(200, {'Content-Type': 'text/html'});
