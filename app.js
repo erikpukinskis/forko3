@@ -76,4 +76,8 @@ App = function (params) {
       callback.call();
     });
   }  
+  
+  this.escapedCode = function() {
+    return this.code.toString().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); 
+  }
 }

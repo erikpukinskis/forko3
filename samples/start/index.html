@@ -1,8 +1,98 @@
 <html>
 <head>
-  <title>Hello, world!</title>
+  <title>Hellos, world!</title>
+  <script src="https://www.google.com/jsapi?key=ABQIAAAAV8od13bCB_S6FuQjmkftbhTYtbb_g2t-fBJubanFsUbFy8Tl4RRD53co23QQSPg9cdxT0bZsLfuDBg" type="text/javascript"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+  
+  <script type="text/javascript">
+    var db_url = "/couchdb";
+    var rev;
+    
+    function create_db(callback) {
+      $.ajax({ 
+        url: db_url + "/start", 
+        type: 'put',
+        success: function() {
+          create_home_page(callback);
+        },
+        error: callback
+      });     
+    }      
+
+    function create_home_page(callback) {
+      $.ajax({ 
+        url: db_url + "/start/home", 
+        type: 'put',
+        data: "{\"body\": \"hello jacaksses\"}",
+        success: callback
+      });
+    }    
+    
+    function load() {
+      $.ajax({ 
+        url: db_url + "/start/home", 
+        type: 'get',
+        dataType: 'json',
+        success: function(data) {
+          rev = data['_rev'];
+          $("#body").html(data['body']);
+          $("#code").html(data['body']);
+          $("#title").html("home");
+          $("#show").show();
+          $("#edit").hide();
+        }
+      });
+    }
+      
+    function edit() {
+      $("#show").hide();
+      $("#edit").show();
+    }
+    
+    function save() {
+      $.ajax({ 
+        url: db_url + "/start/home", 
+        type: 'put',
+        data: JSON.stringify({"_rev": rev, "body": $("#code").html()}),
+        success: load
+      });  
+    }
+    
+    create_db(function () {
+      load();
+    });
+
+  </script>
+  
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 20px auto;
+      width: 800px;
+    }
+    
+    h1, ul#page_links, ul#page_links li { display: inline; }
+    h1 { font-size: 3em; font-weight: normal; }
+    #page { border: 1px solid #CCC; padding: 20px }
+    #body { margin: 1em 0; }
+    h2 { text-align: right; color: red; font-weight: normal; margin: 0;}
+    #code { width: 100%; height: 30em; }
+  </style>
 </head>
 <body>
-This is a demo app hosted on Forkolator!<br>
-<a href="/fork/start">Fork it!</a> | <a href="/edit/start">Edit it!</a>
+<h2>ForkWiki</h2>
+<div id="page">
+  <div id="show">
+    <h1 id="title"></h1>
+    <ul id="page_links">
+    <li><a href="javascript:edit();">Edit this page</a></li>
+    </ul>
+    <div id="body"></div>
+  </div>
+  
+  <div id="edit" style="display: none;">
+    <textarea id="code"></textarea>
+    <button onclick="save()">Save</button>
+  </div>
+</div>
 </body>

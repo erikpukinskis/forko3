@@ -19,7 +19,7 @@
     %strong Code
     %br/
     %textarea{id: 'code', name: 'code'}
-      = app.code
+      = app.escapedCode()
     
   %p
     %input{type: 'submit', value: ((action == 'fork') ? 'Create' : 'Save')}
